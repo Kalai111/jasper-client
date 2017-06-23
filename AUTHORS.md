@@ -16,6 +16,7 @@ Jasper. Thanks a lot!
     Alex Siri
     Andrew Stahlman <andrew.stahlman@gmail.com>
     James Timmons
+    Kalai Selvan D
 
 *Please alphabetize new entries*
 
