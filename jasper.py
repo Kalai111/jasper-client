@@ -21,6 +21,8 @@ sys.path.append(jasperpath.LIB_PATH)
 parser = argparse.ArgumentParser(description='Jasper Voice Control Center')
 parser.add_argument('--local', action='store_true',
                     help='Use text input instead of a real microphone')
+parser.add_argument('--cli_with_tts', action='store_true',
+                    help='Use CLI for Input and Speech for Output')
 parser.add_argument('--no-network-check', action='store_true',
                     help='Disable the network connection check')
 parser.add_argument('--diagnose', action='store_true',
@@ -30,6 +32,8 @@ args = parser.parse_args()
 
 if args.local:
     from client.local_mic import Mic
+elif args.cli_with_tts:
+    from client.cli_with_tts_mic import Mic
 else:
     from client.mic import Mic
 

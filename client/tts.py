@@ -73,7 +73,8 @@ class AbstractTTSEngine(object):
     def play(self, filename):
         # FIXME: Use platform-independent audio-output here
         # See issue jasperproject/jasper-client#188
-        cmd = ['aplay', '-D', 'plughw:1,0', str(filename)]
+        #cmd = ['aplay', '-D', 'plughw:1,0', str(filename)]
+        cmd = ['aplay', str(filename)]
         self._logger.debug('Executing %s', ' '.join([pipes.quote(arg)
                                                      for arg in cmd]))
         with tempfile.TemporaryFile() as f:
@@ -137,12 +138,14 @@ class EspeakTTS(AbstractTTSEngine):
 
     SLUG = "espeak-tts"
 
-    def __init__(self, voice='default+m3', pitch_adjustment=40,
-                 words_per_minute=160):
+    def __init__(self, voice='default+f4', pitch_adjustment=70,
+                 words_per_minute=125, amplitude=200, word_gap='10mS'):
         super(self.__class__, self).__init__()
         self.voice = voice
         self.pitch_adjustment = pitch_adjustment
         self.words_per_minute = words_per_minute
+        self.amplitude = amplitude
+        self.word_gap = word_gap
 
     @classmethod
     def get_config(cls):
@@ -163,6 +166,13 @@ class EspeakTTS(AbstractTTSEngine):
                     if 'words_per_minute' in profile['espeak-tts']:
                         config['words_per_minute'] = \
                             profile['espeak-tts']['words_per_minute']
+                    if 'amplitude' in profile['espeak-tts']:
+                        config['amplitude'] = \
+                            profile['espeak-tts']['amplitude']
+                    if 'word_gap' in profile['espeak-tts']:
+                        config['word_gap'] = \
+                            profile['espeak-tts']['word_gap']
+                      
         return config
 
     @classmethod
@@ -176,6 +186,8 @@ class EspeakTTS(AbstractTTSEngine):
             fname = f.name
         cmd = ['espeak', '-v', self.voice,
                          '-p', self.pitch_adjustment,
+                         '-a', self.amplitude,
+                         '-g', self.word_gap,
                          '-s', self.words_per_minute,
                          '-w', fname,
                          phrase]
